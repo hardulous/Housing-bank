@@ -1,0 +1,16 @@
+.MuiTabs-flexContainerVertical + span {
+    right: 0;
+    width: 100%;
+    border-radius: 10px;
+    background-color: rgb(5 100 200);
+}
+
+.MuiTab-textColorInherit.Mui-selected {
+    opacity: 1;
+    color: white;
+}
+
+.MuiTab-textColorInherit{
+    opacity: 1;
+    color: black;
+}

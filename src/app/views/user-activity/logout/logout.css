@@ -1,0 +1,109 @@
+.table {
+  margin: 1rem 2rem 1rem 2rem;
+}
+
+.feedbackmain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* margin-top: 1rem; */
+  flex-direction: column;
+}
+
+.feedbackparent {
+  display: flex;
+  flex-direction: column;
+  /* margin-left: 22rem;
+    margin-top: 2rem; */
+  width: 35rem;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.feedbackchild {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ratingdiv {
+  display: flex;
+  justify-content: center;
+}
+
+.MuiRating-sizeLarge {
+  font-size: 35px;
+}
+
+.MuiRating-label {
+  cursor: inherit;
+  padding: 1rem;
+}
+
+.tableheadmaindiv {
+  display: flex;
+}
+
+.topbardivmain {
+  display: flex;
+  margin: 0;
+  z-index: 99;
+  box-shadow: 0px 0px 25px -3px black;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.95) 44%,
+    rgba(247, 247, 247, 0.4) 50%,
+    rgba(255, 255, 255, 0)
+  );
+  height: 40px;
+}
+
+.topbardivleft {
+  flex: 1;
+  background-color: rgb(5 100 200);
+}
+
+.topbardivright {
+  flex: 1;
+  background-color: rgb(5 100 200);
+}
+
+.topbardivrightchild {
+  display: flex;
+  margin-right: 12px;
+  float: right;
+  height: 40px;
+  align-items: center;
+  color: whitesmoke;
+}
+
+.topbardivleftchild {
+  height: 40px;
+}
+
+.topbardivleftchild img {
+  max-width: 75%;
+  margin-left: 10px;
+  margin-top: 1px;
+  height: 90%;
+}
+
+.Pswitchbutton {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.Cswitchbutton {
+  display: flex;
+  width: 231px;
+  margin: 1rem;
+  border-radius: 3px;
+  height: 4rem;
+  /* background-color: #fafafa; */
+  box-shadow: 0px 0px 1px #808080;
+  justify-content: space-around;
+  margin-top: 0rem;
+  align-items: center;
+  /* border: 1px solid #ccc; */
+  user-select: none;
+}
