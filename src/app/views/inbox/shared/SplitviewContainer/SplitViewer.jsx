@@ -28,20 +28,15 @@ const SplitView = (props) => {
   let isRti = Cookies.get("isRti");
   let isCabinet = Cookies.get("isCabinet");
 
-  const {
-    tabIndex,
-    loading,
-    alignment,
-    settabIndex,
-    handleAlignment,
-  } = useContext(SplitViewContext);
+  const { tabIndex, loading, alignment, settabIndex, handleAlignment } =
+    useContext(SplitViewContext);
 
   return (
     <div className="m-sm-30">
       {loading && <Loading />}
 
-      <Grid container justifyContent="center" spacing={2}>
-        <Grid item xs={8}>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
           <Breadcrumb
             routeSegments={[
               // { name: t("inbox"), path: "/eoffice/inbox/file" },
@@ -69,7 +64,8 @@ const SplitView = (props) => {
             ]}
           />
         </Grid>
-        <Grid item xs={4} className="inbox_view_btn">
+
+        {/* <Grid item xs={4} className="inbox_view_btn">
           <ToggleButtonGroup
             value={alignment}
             exclusive
@@ -83,10 +79,11 @@ const SplitView = (props) => {
               <CgViewDay />
             </ToggleButton>
           </ToggleButtonGroup>
-        </Grid>
+        </Grid> */}
+
       </Grid>
 
-      {isCabinet || isRti ? (
+      {/* {isCabinet || isRti ? (
         <BmProvider>
           <BmContainer />
         </BmProvider>
@@ -109,7 +106,12 @@ const SplitView = (props) => {
             <h1>Coalition Cover</h1>
           </TabPanel>
         </Tabs>
-      )}
+      )} */}
+
+      <BmProvider>
+        <BmContainer />
+      </BmProvider>
+
     </div>
   );
 };

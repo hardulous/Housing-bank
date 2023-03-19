@@ -20,6 +20,18 @@ import {
   DialogContentText,
   RadioGroup,
   Radio,
+  AccordionSummary,
+  Typography,
+  AccordionDetails,
+  Accordion,
+  Divider,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableBody,
+  AccordionActions,
+  Checkbox,
 } from "@material-ui/core";
 import HeadersAndFootersView from "../../../../FileApproval/documentEditor/editor";
 import PdfViewer from "app/pdfViewer/pdfViewer";
@@ -81,8 +93,22 @@ import { SplitterComponent } from "@syncfusion/ej2-react-layouts";
 import {
   Announcement,
   ArrowBack,
+  Business,
+  Close,
+  Create,
+  Delete,
+  Description,
+  Edit,
+  Event,
+  ExpandMore,
+  Forward,
+  History,
   ImportContacts,
+  Note,
+  Person,
+  PriorityHigh,
   Replay,
+  Subject,
 } from "@material-ui/icons";
 import {
   Autocomplete,
@@ -101,10 +127,14 @@ import { saveAs } from "file-saver";
 import CloseFile from "../../CloseFile";
 import Remarks from "../../Remarks";
 import YlowNotes from "../../YlowNotes";
-import { FaRegCalendarTimes } from "react-icons/fa";
+import { FaRegCalendarTimes, FaSearchPlus } from "react-icons/fa";
 import { useContext } from "react";
 import { BmContext } from "./Worker";
 import { SplitViewContext } from "../Worker";
+import { AiOutlineFileText, AiOutlineFileUnknown } from "react-icons/ai";
+import { MdOutlineNoteAlt } from "react-icons/md";
+import { HiDownload } from "react-icons/hi";
+import Add from "@material-ui/icons/Add";
 
 const PaperComponent = (props) => {
   return (
@@ -207,6 +237,11 @@ const useStyles = makeStyles((theme) => ({
     minWidth: "50px",
     maxWidth: "50px",
   },
+  fileInfo: {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.4rem",
+  },
 }));
 
 const ViewOne = (props) => {
@@ -222,6 +257,9 @@ const ViewOne = (props) => {
   let isCabinet = Cookies.get("isCabinet");
   let cabinetpartcase = Cookies.get("cabinetpartcase");
   let referenceNumber = Cookies.get("referenceNumber");
+  const subject = Cookies.get("inboxFile");
+  const priority = Cookies.get("priority");
+  const type = Cookies.get("type");
   const department = sessionStorage.getItem("department");
   const rolename = sessionStorage.getItem("role");
   const username = localStorage.getItem("username");
@@ -298,6 +336,7 @@ const ViewOne = (props) => {
     setServiceLetterId,
     departmentList,
     setDepartmentList,
+    fileInfo,
     status,
     setStatus,
     notingStatus,
@@ -1307,481 +1346,480 @@ const ViewOne = (props) => {
       {}
       <Grid
         container
-        justifyContent="center"
+        justifyContent="space-between"
         spacing={1}
         style={{
           margin: "0px",
-          padding: "0rem 1rem",
-          border: "1px solid #80808085",
-          background: "#ffffffa1",
         }}
       >
-        <Grid item xs={6} style={{ display: "flex", alignItems: "center" }}>
-          {blnVisible ? (
-            <TextField
-              select
-              label={t("note_on_file")}
-              value={NOF}
-              size="small"
-              fullWidth
-              onChange={handleChange}
-              variant="outlined"
-              className={classes.formControl}
-            >
-              {notingData.map((item, index) => (
-                <MenuItem key={index} value={JSON.stringify(item)}>
-                  {item.fileName.split(".")[0].split(".")[0]}
-                </MenuItem>
-              ))}
-            </TextField>
-          ) : null}
-          {partCase !== "true" && (
-            <>
-              {!notingSigned ? (
-                <Tooltip
-                  title={reSaveNof ? t("autosave") : t("sign")}
-                  aria-label="Sign"
-                >
-                  <span>
-                    <Button
-                      id="inbox_Noting_sign"
-                      variant="contained"
-                      color="secondary"
-                      className={classes.button}
-                      onClick={handleSignNoting}
-                      disabled={
-                        blnDisable || isRegister || isrtiforward || reSaveNof
-                      }
-                    >
-                      <CreateIcon style={{ fontSize: "1rem" }} />
-                    </Button>
-                  </span>
-                </Tooltip>
-              ) : (
-                <Tooltip title={t("remove_sign")} aria-label="Sign">
-                  <span>
-                    <Button
-                      id="inbox_remove_sign"
-                      // style={{ marginBottom: "15px" }}
-                      variant="contained"
-                      color="primary"
-                      className={classes.button}
-                      onClick={
-                        isRti === "true"
-                          ? handleRtiDocumentRollback
-                          : handleDocumentRollback
-                      }
-                      disabled={blnDisable || isRegister || isrtiforward}
-                    >
-                      <RestorePageIcon style={{ fontSize: "1rem" }} />
-                    </Button>
-                  </span>
-                </Tooltip>
-              )}
-              <Tooltip title={t("add_noting")} aria-label="Add Noting">
-                <span>
-                  <Button
-                    id="inbox_add_noting"
-                    // style={{ marginBottom: "15px" }}
-                    variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    disabled={blnDisableForward || isRegister || isrtiforward}
-                    onClick={
-                      isRti === "true"
-                        ? handleAddNoting
-                        : handleAddPartCaseNoting
-                    }
-                  >
-                    <NoteAddIcon style={{ fontSize: "1rem" }} />
-                  </Button>
-                </span>
-              </Tooltip>
-
-              <Tooltip title={t("add yellow note")} aria-label="Add Noting">
-                <span>
-                  <Button
-                    id="inbox_add_ylo_note"
-                    // style={{ marginBottom: "15px" }}
-                    variant="contained"
-                    color="secondary"
-                    className={classes.button}
-                    onClick={() => setaddNote(true)}
-                  >
-                    <NoteAddIcon style={{ fontSize: "1rem" }} />
-                  </Button>
-                </span>
-              </Tooltip>
-            </>
-          )}
-        </Grid>
-
-        <Grid item xs={6} style={{ display: "flex", alignItems: "center" }}>
-          <Autocomplete
-            size="small"
-            name="enclosure"
-            autoHighlight
-            options={enclosureArr.map((option) => option)}
-            value={NOF1}
-            onChange={(e, value) => handleChange1(value)}
-            getOptionLabel={(option) =>
-              option
-                ? `${option.flagNumber}${option.flagNumberMarking} - ${
-                    option && option.subject.split(".")[0]
-                  }`
-                : ""
-            }
-            renderInput={(params, i) => (
-              <>
-                <TextField
-                  style={{ marginTop: "20px" }}
-                  {...params}
-                  variant="outlined"
-                  className={classes.formControl}
-                  label={t("enclosure")}
-                  margin="normal"
-                  id={i}
-                />
-              </>
-            )}
-          />
-          {partCase === "true" ? (
-            <></>
-          ) : (
-            <>
-              {!enclosureSigned ? (
-                <Tooltip
-                  title={reSaveEnco ? t("autosave") : t("sign")}
-                  aria-label="Sign"
-                >
-                  <span>
-                    <Button
-                      id="FlagNumberEnclouser_sign_button"
-                      variant="contained"
-                      color="secondary"
-                      className={classes.button}
-                      onClick={() => {
-                        setFlagNumber(prevFlagNumberEnclouser);
-                        setSfdtData(prevEnclouser);
-                        setFlag("Enclouser");
-                        setOpen(true);
-                      }}
-                      disabled={
-                        isPdf || isRegister || isrtiforward || enclosurelen == 0
-                      }
-                    >
-                      <CreateIcon style={{ fontSize: "1rem" }} />
-                    </Button>
-                  </span>
-                </Tooltip>
-              ) : (
-                <Tooltip title={t("remove_sign")} aria-label="Remove sign">
-                  <span>
-                    <Button
-                      id="FlagNumberEnclouser_removeSign_button"
-                      variant="contained"
-                      color="primary"
-                      className={classes.button}
-                      onClick={
-                        isRti === "true"
-                          ? handleRtiDocumentRollbackEnclosure
-                          : handleDocumentRollbackEnclosure
-                      }
-                      disabled={isPdf || isRegister || isrtiforward}
-                    >
-                      <RestorePageIcon style={{ fontSize: "1rem" }} />
-                    </Button>
-                  </span>
-                </Tooltip>
-              )}
-              <Tooltip
-                title={t("add_cover_letter_to_forward_pa_to_next_level")}
-                aria-label="Cover Letter"
-              >
-                <span>
-                  <Button
-                    id="add_cover_letter"
-                    variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    disabled={hasCoverNote}
-                    onClick={handleCoverLetter}
-                    style={{
-                      display: `${!isRti ? "" : "none"}`,
-                    }}
-                  >
-                    <AddIcon style={{ fontSize: "1rem" }} />
-                  </Button>
-                </span>
-              </Tooltip>
-              {handleuploadCondition() && (
-                <Tooltip title={t("upload_file")} aria-label="Upload File">
-                  <div className={classes.uploadButton}>
-                    {isRti === "true" ? (
-                      <RtiUploader
-                        rtiID={FileID}
-                        deptName={department}
-                        loadRtiData={loadRtiData}
-                      />
-                    ) : (
-                      <FileUploader handleAddEnclosure={handleAddEnclosure} />
-                    )}
-                  </div>
-                </Tooltip>
-              )}
-            </>
-          )}
-
-          <Tooltip
-            title={t("previous_enclosure")}
-            aria-label="Previous Enclosure"
-          >
-            <span>
-              <Button
-                id="inbox_previous_enclosure"
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                onClick={handleChangePreviousEnclosure}
-                disabled={isRegister || isrtiforward || enclosurelen == 0}
-              >
-                <SkipPreviousIcon style={{ fontSize: "1rem" }} />
-              </Button>
-            </span>
-          </Tooltip>
-          <Tooltip title={t("next_enclosure")} aria-label="Next Enclosure">
-            <span>
-              <Button
-                id="inbox_next_enclosure"
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                onClick={handleChangeNextEnclosure}
-                disabled={isRegister || isrtiforward || enclosurelen == 0}
-              >
-                <SkipNextIcon style={{ fontSize: "1rem" }} />
-              </Button>
-            </span>
-          </Tooltip>
-          {partCase !== "true" && (
-            <>
-              <Tooltip
-                title={t("delete_enclosure")}
-                aria-label="Delete Enclosure"
-              >
-                <span>
-                  <Button
-                    id="inbox_delete_enclosure"
-                    variant="contained"
-                    color="secondary"
-                    className={classes.button}
-                    disabled={
-                      rolename !== NOF1?.uploader ||
-                      isRegister ||
-                      isrtiforward ||
-                      enclosurelen == 0
-                    }
-                    // onClick={() => {
-                    //   setFlagNumber(prevFlagNumberEnclouser);
-                    //   deleteEnclosureData();
-                    // }}
-                    onClick={() => {
-                      setFlagNumber(prevFlagNumberEnclouser);
-                      isRti === "true"
-                        ? deleteEnclosureDataRti()
-                        : deleteEnclosureData();
-                    }}
-                  >
-                    <DeleteIcon style={{ fontSize: "1rem" }} />
-                  </Button>
-                </span>
-              </Tooltip>
-              <Tooltip
-                title={t("edit_enclosure_number")}
-                aria-label="Edit Flagnumber"
-              >
-                <span>
-                  <Button
-                    id="edit_enclosure_number_button"
-                    variant="contained"
-                    color="secondary"
-                    disabled={
-                      rolename !== NOF1?.uploader || isRegister || isrtiforward
-                    }
-                    className={classes.button}
-                    onClick={handleFlagOpen}
-                  >
-                    <LocalOfferIcon style={{ fontSize: "1rem" }} />
-                  </Button>
-                </span>
-              </Tooltip>
-            </>
-          )}
-        </Grid>
-
-        <SplitterComponent style={{ zIndex: "0" }}>
+        <SplitterComponent>
           <div
             style={{
-              width: "50%",
+              width: "35%",
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
             }}
           >
-            <div
-              style={{
-                display: !blnHideSyncfusion && openInPdf ? "initial" : "none",
-              }}
-            >
-              <div
-                className="customDiv"
-                style={{
-                  height: "calc(100vh - 150px)",
-                  border: "1px solid #80808073",
-                }}
+            <Accordion className="fileAccordian" defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMore style={{ color: "white" }} />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+                className="fileInfoAccordian"
               >
-                <HeadersAndFootersView
-                  fileId={!blnHideSyncfusion && openInPdf ? rowID : ""}
-                  fileUrl1={!blnHideSyncfusion && openInPdf ? notingURL : ""}
-                  blnIsPartCase={true}
-                  reSave={reSaveNof}
-                  setreSave={(val) => {
-                    setreSaveNof(val);
-                  }}
-                  enclosureData={enclosureData}
-                  handleChange1={handleChange1}
-                  style={{ border: "1px solid #b6b6b6" }}
-                  containerId="container3"
-                />
-              </div>
-            </div>
+                <Typography className={classes.fileInfo}>
+                  <Description style={{ fontSize: "1.8rem", color: "white" }} />
+                  <span style={{ fontSize: "1.3rem", color: "white" }}>
+                    File Description
+                  </span>
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container className="fileInfoCon">
+                  <Grid item xs={12}>
+                    <div className="fileInfoIcon">
+                      <Business style={{ fontSize: "1.2rem" }} />
+                      <span style={{ fontSize: "1.1rem", fontWeight: 800 }}>
+                        Department
+                      </span>
+                    </div>
+                    <span style={{ textAlign: "center" }}>
+                      {fileInfo.fileDept}
+                    </span>
+                  </Grid>
 
-            <div
-              style={{
-                display: !showSWpdf() ? "none" : "initial",
-              }}
-            >
-              <div
-                style={{
-                  border: "1px solid #b6b6b6",
-                  height: "calc(100vh - 150px)",
-                  overflow: "hidden",
-                }}
+                  <Grid item xs={12}>
+                    <div className="fileInfoIcon">
+                      <Subject style={{ fontSize: "1.2rem" }} />
+                      <span style={{ fontSize: "1.1rem", fontWeight: 800 }}>
+                        Subject
+                      </span>
+                    </div>
+                    <span style={{ textAlign: "center" }}>{subject}</span>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <div className="fileInfoIcon">
+                      <PriorityHigh style={{ fontSize: "1.2rem" }} />
+                      <span style={{ fontSize: "1.1rem", fontWeight: 800 }}>
+                        Priority
+                      </span>
+                    </div>
+                    <span style={{ textAlign: "center" }}>{priority}</span>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <div className="fileInfoIcon">
+                      <AiOutlineFileUnknown style={{ fontSize: "1.2rem" }} />
+                      <span style={{ fontSize: "1.1rem", fontWeight: 800 }}>
+                        Type
+                      </span>
+                    </div>
+                    <span style={{ textAlign: "center" }}>{type}</span>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <div className="fileInfoIcon">
+                      <AiOutlineFileText style={{ fontSize: "1.2rem" }} />
+                      <span style={{ fontSize: "1.1rem", fontWeight: 800 }}>
+                        File
+                      </span>
+                    </div>
+                    <span style={{ textAlign: "center" }}>{fileInfo.file}</span>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <div className="fileInfoIcon">
+                      <Person style={{ fontSize: "1.2rem" }} />
+                      <span style={{ fontSize: "1.1rem", fontWeight: 800 }}>
+                        Created By
+                      </span>
+                    </div>
+                    <span style={{ textAlign: "center" }}>
+                      {fileInfo.createdBy}
+                    </span>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <div className="fileInfoIcon">
+                      <Event style={{ fontSize: "1.2rem" }} />
+                      <span style={{ fontSize: "1.1rem", fontWeight: 800 }}>
+                        Created On
+                      </span>
+                    </div>
+                    <span style={{ textAlign: "center" }}>
+                      {fileInfo.createdOn}
+                    </span>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion className="fileAccordian" defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMore style={{ color: "white" }} />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+                className="fileInfoAccordian"
               >
-                <SplitViewPdfViewer
-                  fileUrl={!blnHideSyncfusion && openInPdf ? "" : notingURL}
-                  pdfLoads={(val) => {
-                    setpdfLoads(val);
-                  }}
-                  isCustomLink={true}
-                  enclosureData={enclosureArr}
-                  handleChange1={handleChange1}
-                  fileId={!blnHideSyncfusion && openInPdf ? "" : rowID}
-                  flag={"SPLIT"}
-                  flagNumber={prevFlagNumberNF}
-                  anottId={nofAnnoId}
-                />
-              </div>
-            </div>
-          </div>
+                <Typography className={classes.fileInfo}>
+                  <Description style={{ fontSize: "1.8rem", color: "white" }} />
+                  <span style={{ fontSize: "1.3rem", color: "white" }}>
+                    Note Sheet(s)
+                  </span>
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container className="fileNofCon">
+                  <Grid item xs={12}>
+                    <TableContainer
+                      component={Paper}
+                      style={{
+                        border: `1px solid #8080805c`,
+                      }}
+                    >
+                      <Table
+                        component="div"
+                        className="App-main-table"
+                        style={{
+                          overflow: "hidden",
+                        }}
+                      >
+                        <TableHead component="div">
+                          <TableRow component="div" className="nof_table_head">
+                            <div>Filename</div>
+                            <div>By</div>
+                            <div>Status</div>
+                            <div>Actions</div>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody
+                          component="div"
+                          style={{
+                            height: "calc(100vh - 250px)",
+                            overflow: "auto",
+                          }}
+                        >
+                          {NOFarr.map((item, i) => {
+                            const status =
+                              item.status === "Approved"
+                                ? "lightgreen"
+                                : item.status === "Rejected"
+                                ? "rgb(253, 78, 50)"
+                                : "rgb(255, 175, 56)";
 
-          <div style={{ width: "50%" }}>
-            <Grid container style={{ flexWrap: "nowrap", height: "100%" }}>
-              <Grid
-                item
-                style={{
-                  width: hanldeCheckCondition() ? "95%" : "100%",
-                  border: "1px solid #b6b6b6",
-                }}
+                            return (
+                              <TableRow
+                                component="div"
+                                className={`nof_table_row ${
+                                  i == 0 ? "active" : ""
+                                }`}
+                                key={i}
+                                // onClick={() => handleChange(JSON.stringify(item))}
+                              >
+                                <div>{item.filename}</div>
+                                <div>
+                                  <span>{item.by}</span>
+                                  <span>{item.date}</span>
+                                </div>
+                                <div
+                                  style={{
+                                    color: "white",
+                                    background: status,
+                                    borderRadius: "10px",
+                                    textAlign: "center",
+                                  }}
+                                >
+                                  {item.status}
+                                </div>
+                                <div>
+                                  <IconButton>
+                                    <FaSearchPlus />
+                                  </IconButton>
+                                  <IconButton>
+                                    <HiDownload />
+                                  </IconButton>
+                                </div>
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion className="fileAccordian" defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMore style={{ color: "white" }} />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+                className="fileInfoAccordian"
               >
-                <div
-                  className="customDiv"
-                  style={{
-                    display:
-                      !enclosureSigned && coverLetter ? "initial" : "none",
-                    height: "calc(100vh - 150px)",
-                  }}
-                >
-                  <HeadersAndFootersView
-                    fileId={!enclosureSigned && coverLetter ? rowID : ""}
-                    fileUrl1={!enclosureSigned && coverLetter ? URL : ""}
-                    blnIsPartCase={true}
-                    reSave={reSaveEnco}
-                    setreSave={(val) => {
-                      setreSaveEnco(val);
-                    }}
-                    enclosureData={enclosureData}
-                    style={{ border: "1px solid #b6b6b6" }}
-                    containerId="container4"
-                  />
-                </div>
-
-                <div
-                  style={{
-                    display:
-                      !enclosureSigned && coverLetter ? "none" : "initial",
-                    height: "calc(100vh - 150px)",
-                  }}
-                >
-                  <PdfViewer
-                    personalID={!enclosureSigned && coverLetter ? "" : rowID}
-                    flag={"SPLIT"}
-                    flagNumber={prevFlagNumberEnclouser}
-                    fileUrl={""}
-                    pdfLoads={(val) => {
-                      setEnclosurePdfLoads(val);
-                    }}
-                    handleChangePage={handleChangePage}
-                    pageNumber={pageNumber}
-                    isPage={true}
-                    anottId={enclosureAnnoiD}
-                    isSample={enclosureArr.length > 0 ? false : true}
-                  />
-                </div>
-              </Grid>
-
-              {
-                // (partCase !== "true" || isRti !== "true")
-                hanldeCheckCondition() && (
-                  <Grid>
-                    <div className="split-custom-btn-wrapper">
-                      {pdfViewerButtons.map((item) => {
-                        return (
-                          <Button
-                            id="pdfViewerButtons"
-                            key={item.btnId}
-                            size={"small"}
-                            fileurl={item.fileurl}
-                            buttonname={item.btnId}
-                            page={item.pageNumber}
-                            style={{ backgroundColor: item.backgroundColor }}
-                            onClick={(e) => pdfCustomButton(e)}
-                            className="split-btn-custom"
-                            variant="contained"
-                            color="primary"
-                            href="#contained-buttons"
-                          >
-                            {item.btnName}
-                          </Button>
-                        );
-                      })}
-                      <Tooltip title={t("reset_tags")}>
-                        <div style={{ fontSize: "1rem", color: "grey" }}>
-                          <Button
-                            id="reset_tags_button"
-                            className="split-btn-custom"
-                            onClick={resetButton}
-                            variant="contained"
-                            color="secondary"
-                          >
-                            <Replay
-                              style={{ fontSize: "medium", paddingTop: "5px" }}
-                            />
-                          </Button>
-                        </div>
-                      </Tooltip>
+                <Typography className={classes.fileInfo}>
+                  <Description style={{ fontSize: "1.8rem", color: "white" }} />
+                  <span style={{ fontSize: "1.3rem", color: "white" }}>
+                    Enclosures
+                  </span>
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container className="fileNofCon">
+                  <Grid item xs={12}>
+                    <TableContainer
+                      component={Paper}
+                      style={{
+                        border: `1px solid #8080805c`,
+                      }}
+                    >
+                      <Table
+                        component="div"
+                        className="App-main-table"
+                        style={{
+                          overflow: "hidden",
+                        }}
+                      >
+                        <TableHead component="div">
+                          <TableRow component="div" className="enco_table_head">
+                            <div>
+                              <Checkbox />
+                            </div>
+                            <div>#</div>
+                            <div>Descritopn</div>
+                            <div>By</div>
+                            <div>Page No</div>
+                            <div>Actions</div>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody
+                          component="div"
+                          style={{
+                            height: "calc(100vh - 250px)",
+                            overflow: "auto",
+                          }}
+                        >
+                          {Encoarr.map((item, i) => {
+                            return (
+                              <TableRow
+                                component="div"
+                                className={`enco_table_row ${
+                                  i == 0 ? "active" : ""
+                                }`}
+                                key={i}
+                                // onClick={() => handleChange(JSON.stringify(item))}
+                              >
+                                <div>
+                                  <Checkbox />
+                                </div>
+                                <div>{item.flagNo}</div>
+                                <div>{item.description}</div>
+                                <div>
+                                  <span>{item.by}</span>
+                                  <span>{item.date}</span>
+                                </div>
+                                <div>{item.page_no}</div>
+                                <div>
+                                  <IconButton>
+                                    <FaSearchPlus />
+                                  </IconButton>
+                                  <IconButton>
+                                    <HiDownload />
+                                  </IconButton>
+                                </div>
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    <div className="encolureActionBtn">
+                      <Button
+                        variant="contained"
+                        size="small"
+                        color="primary"
+                        startIcon={<Add />}
+                      >
+                        Add
+                      </Button>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        color="primary"
+                        startIcon={<Delete />}
+                      >
+                        Delete
+                      </Button>
+                      <Button
+                        variant="contained"
+                        size="small"
+                        color="primary"
+                        startIcon={<Edit />}
+                      >
+                        Edit #
+                      </Button>
                     </div>
                   </Grid>
-                )
-              }
-            </Grid>
+                </Grid>
+              </AccordionDetails>
+              <Divider />
+            </Accordion>
+          </div>
+
+          <div
+            style={{
+              width: "65%",
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
+            }}
+          >
+            <Accordion className="fileAccordian" defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMore style={{ color: "white" }} />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+                className="fileInfoAccordian"
+              >
+                <Typography className={classes.fileInfo}>
+                  <MdOutlineNoteAlt
+                    style={{ fontSize: "1.8rem", color: "white" }}
+                  />
+                  <span style={{ fontSize: "1.3rem", color: "white" }}>
+                    Office Note / Green Sheet
+                  </span>
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container>
+                  <Grid
+                    item
+                    xs={12}
+                    style={{
+                      height: "75vh",
+                    }}
+                  >
+                    <SplitViewPdfViewer
+                      fileUrl={notingURL}
+                      pdfLoads={(val) => {
+                        setpdfLoads(val);
+                      }}
+                      isCustomLink={true}
+                      enclosureData={enclosureArr}
+                      handleChange1={handleChange1}
+                      fileId={!blnHideSyncfusion && openInPdf ? "" : rowID}
+                      flag={"SPLIT"}
+                      flagNumber={prevFlagNumberNF}
+                      anottId={nofAnnoId}
+                    />
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion className="fileAccordian" defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMore style={{ color: "white" }} />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+                className="fileInfoAccordian"
+              >
+                <Typography className={classes.fileInfo}>
+                  <MdOutlineNoteAlt
+                    style={{ fontSize: "1.8rem", color: "white" }}
+                  />
+                  <span style={{ fontSize: "1.3rem", color: "white" }}>
+                    Office Note / Response
+                  </span>
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container>
+                  <Grid
+                    item
+                    xs={12}
+                    style={{
+                      height: "75vh",
+                    }}
+                  >
+                    <HeadersAndFootersView
+                      fileId={rowID}
+                      fileUrl1={notingURL}
+                      blnIsPartCase={true}
+                      reSave={reSaveNof}
+                      setreSave={(val) => {
+                        setreSaveNof(val);
+                      }}
+                      enclosureData={enclosureData}
+                      handleChange1={handleChange1}
+                      // style={{ border: "1px solid #b6b6b6" }}
+                      containerId="container3"
+                    />
+                  </Grid>
+                </Grid>
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion className="fileAccordian" defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMore style={{ color: "white" }} />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+                className="fileInfoAccordian"
+              >
+                <Typography>
+                  <span style={{ fontSize: "1.3rem", color: "white" }}>
+                    File Action
+                  </span>
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <div className="fileActionCon">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                    startIcon={<Close />}
+                  >
+                    Save & Close
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                    startIcon={<Create />}
+                  >
+                    Create Part Files
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                    startIcon={<Forward />}
+                  >
+                    Forward
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="primary"
+                    startIcon={<History />}
+                  >
+                    History
+                  </Button>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    color="secondary"
+                    startIcon={<Note />}
+                  >
+                    Yellow Note
+                  </Button>
+                </div>
+              </AccordionDetails>
+            </Accordion>
           </div>
         </SplitterComponent>
       </Grid>
@@ -2076,3 +2114,129 @@ export default connect(mapStateToProps, {
   getcabinetpartcase,
   openFile,
 })(ViewOne);
+
+const NOFarr = [
+  {
+    id: 1,
+    filename: "Notesheet1",
+    by: "7wghrc",
+    status: "Approved",
+    date: "4/11/2022",
+  },
+  {
+    id: 2,
+    filename: "Holiday leave",
+    by: "7wghrc",
+    status: "Rejected",
+    date: "9/7/2022",
+  },
+  {
+    id: 3,
+    filename: "Posting",
+    by: "7wgcad",
+    status: "Approved",
+    date: "4/28/2022",
+  },
+  {
+    id: 4,
+    filename: "Traveling Expense",
+    by: "7wgmeto",
+    status: "In Progress",
+    date: "4/1/2022",
+  },
+  {
+    id: 5,
+    filename: "Allotment Of Systems",
+    by: "7wghrc",
+    status: "In Progress",
+    date: "1/21/2023",
+  },
+  {
+    id: 6,
+    filename: "Result Annoucement",
+    by: "7wgcad",
+    status: "Approved",
+    date: "3/31/2022",
+  },
+  {
+    id: 7,
+    filename: "Writs",
+    by: "7wgmeto",
+    status: "Rejected",
+    date: "3/14/2023",
+  },
+  {
+    id: 8,
+    filename: "Moving And Allotment",
+    by: "7wghrc",
+    status: "Approved",
+    date: "9/4/2022",
+  },
+];
+
+const Encoarr = [
+  {
+    id: 1,
+    description: "Notesheet1",
+    flagNo: 1,
+    by: "7wghrc",
+    page_no: 55,
+    date: "4/11/2022",
+  },
+  {
+    id: 2,
+    description: "Holiday leave",
+    flagNo: 2,
+    by: "7wghrc",
+    page_no: 102,
+    date: "9/7/2022",
+  },
+  {
+    id: 3,
+    description: "Posting",
+    flagNo: 3,
+    by: "7wgcad",
+    page_no: 100,
+    date: "4/28/2022",
+  },
+  {
+    id: 4,
+    description: "Traveling Expense",
+    flagNo: 4,
+    by: "7wgmeto",
+    page_no: 400,
+    date: "4/1/2022",
+  },
+  {
+    id: 5,
+    description: "Allotment Of Systems",
+    flagNo: 5,
+    by: "7wghrc",
+    page_no: 23,
+    date: "1/21/2023",
+  },
+  {
+    id: 6,
+    description: "Result Annoucement",
+    flagNo: 6,
+    by: "7wgcad",
+    page_no: 141,
+    date: "3/31/2022",
+  },
+  {
+    id: 7,
+    description: "Writs",
+    flagNo: 7,
+    by: "7wgmeto",
+    page_no: 44,
+    date: "3/14/2023",
+  },
+  {
+    id: 8,
+    description: "Moving And Allotment",
+    flagNo: 8,
+    by: "7wghrc",
+    page_no: 1500,
+    date: "9/4/2022",
+  },
+];

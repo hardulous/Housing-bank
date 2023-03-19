@@ -281,7 +281,7 @@ const HeadersAndFootersView = (props) => {
   };
 
   const fullScreenFun = () => {
-    let elem = document.getElementById(props.containerId);
+    let elem = document.getElementById(id);
     if (fullScreen) {
       setFullScreen(false);
       if (document.exitFullscreen) {

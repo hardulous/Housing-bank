@@ -290,7 +290,7 @@ const SplitViewPdfViewer = (props) => {
           </div>
         </Dialog>
       )}
-      <div className="App">{renderPdf()}</div>;
+      <div className="App">{renderPdf()}</div>
     </>
   );
 };

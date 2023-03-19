@@ -18,7 +18,14 @@ const Breadcrumb = ({ routeSegments, otherData }) => {
           style={{ color: theme ? "rbg(5 100 200)" : "#FFAF38" }}
         />
       </NavLink>
-      <div style={{marginBottom: "6px", display: "flex", alignItems: "center"}} >
+      <div
+        style={{
+          marginBottom: "6px",
+          display: "flex",
+          alignItems: "center",
+          flexGrow: 1,
+        }}
+      >
         {routeSegments
           ? routeSegments.map((route, index) => (
               <Fragment key={index}>
@@ -46,24 +53,34 @@ const Breadcrumb = ({ routeSegments, otherData }) => {
               </Fragment>
             ))
           : null}
-        {otherData &&
-          otherData.map((data, index) => (
-            <Fragment key={index}>
-              {index !== otherData.length - 1 ? (
-                <span style={{ fontSize: "12px" }} className="capitalize">
-                  &nbsp;|{" "}
-                  <span style={{ fontWeight: "800" }}>{data.key} - </span>
-                  {data.value}
-                </span>
-              ) : (
-                <span style={{ fontSize: "12px" }} className="capitalize">
-                  &nbsp;|{" "}
-                  <span style={{ fontWeight: "800" }}>{data.key} - </span>
-                  {data.value}
-                </span>
-              )}
-            </Fragment>
-          ))}
+        {otherData && (
+          <div
+            style={{
+              flexGrow: 1,
+              display: "flex",
+              marginLeft: "12px",
+              gap: "14px",
+            }}
+          >
+            {otherData.map((data, index) => (
+              <Fragment key={index}>
+                {index !== otherData.length - 1 ? (
+                  <span style={{ fontSize: "12px" }} className="capitalize">
+                    &nbsp;|{" "}
+                    <span style={{ fontWeight: "800" }}>{data.key} - </span>
+                    {data.value}
+                  </span>
+                ) : (
+                  <span style={{ fontSize: "12px" }} className="capitalize">
+                    &nbsp;|{" "}
+                    <span style={{ fontWeight: "800" }}>{data.key} - </span>
+                    {data.value}
+                  </span>
+                )}
+              </Fragment>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

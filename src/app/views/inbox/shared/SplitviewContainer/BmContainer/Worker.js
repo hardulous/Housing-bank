@@ -289,6 +289,12 @@ const BmProvider = (props) => {
       value.setBlnVisible(true);
       value.setBlnDisableForward(!resp.enableAddNoting);
       value.setcanClose(department === resp.department);
+      value.setfileInfo({
+        fileDept:resp.department,
+        createdBy:resp.createdBy,
+        createdOn:resp.createdOn,
+        file:resp.file
+      })
       setLoading(false);
     });
     if (partCase !== "true") {
@@ -395,6 +401,12 @@ const BmGetterAndSetter = () => {
   const [send, setSend] = useState(false);
   const [serviceLetterId, setServiceLetterId] = useState("");
   const [departmentList, setDepartmentList] = useState([]);
+  const [fileInfo, setfileInfo] = useState({
+    fileDept:"",
+    createdOn:"",
+    createdBy:"",
+    file:""
+  });
   const [status, setStatus] = useState("");
   const [notingStatus, setNotingStatustatus] = useState("");
   const [page, setPage] = useState(1);
@@ -533,6 +545,8 @@ const BmGetterAndSetter = () => {
     setServiceLetterId,
     departmentList,
     setDepartmentList,
+    fileInfo,
+    setfileInfo,
     status,
     setStatus,
     notingStatus,
