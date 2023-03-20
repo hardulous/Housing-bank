@@ -286,7 +286,7 @@ const ViewOne = (props) => {
     setEnclosureArr,
     open,
     setOpen,
-    URL,
+    URL: url,
     setURL,
     pdfLoads,
     setpdfLoads,
@@ -395,6 +395,10 @@ const ViewOne = (props) => {
   } = useContext(BmContext);
 
   const { loading, setLoading } = useContext(SplitViewContext);
+
+  const openNewTab = (nof1) => {
+    console.log(nof1);
+  };
 
   const handleChangePage = (val) => {
     setPage(val);
@@ -573,7 +577,7 @@ const ViewOne = (props) => {
     var urlExist = true;
     var resUrl = "";
     for (let x = 0; x < pdfViewerButtons.length; x++) {
-      if (pdfViewerButtons[x].fileurl === URL) {
+      if (pdfViewerButtons[x].fileurl === url) {
         urlExist = false;
       }
       if (fileurl) {
@@ -595,7 +599,7 @@ const ViewOne = (props) => {
               ...item,
 
               backgroundColor: tempColour[item.btnId],
-              fileurl: URL,
+              fileurl: url,
               pageNumber: page,
             }
           : item
@@ -1351,6 +1355,7 @@ const ViewOne = (props) => {
         style={{
           margin: "0px",
         }}
+        className="splitView"
       >
         <SplitterComponent>
           <div
@@ -1534,7 +1539,9 @@ const ViewOne = (props) => {
                                   {item.status}
                                 </div>
                                 <div>
-                                  <IconButton>
+                                  <IconButton
+                                    onClick={() => openNewTab(enclosureData[0])}
+                                  >
                                     <FaSearchPlus />
                                   </IconButton>
                                   <IconButton>

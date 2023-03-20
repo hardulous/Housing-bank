@@ -131,8 +131,8 @@ const LoginPage = () => {
 
   // for handling diffi hellman alogrithm
   useEffect(() => {
-    Prime_No = process.env.REACT_APP_PRIME_NO;
-    Primitive = process.env.REACT_APP_PRIMITIVE;
+    Prime_No = window.__ENV__.REACT_APP_PRIME_NO;
+    Primitive = window.__ENV__.REACT_APP_PRIMITIVE;
     Private_Key_A = Math.floor(Math.random() * (10 - 1 + 1) + 1);
     Secret_A = power(Primitive, Private_Key_A, Prime_No);
     getPublicSecret(Secret_A);

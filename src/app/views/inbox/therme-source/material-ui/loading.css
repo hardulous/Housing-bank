@@ -886,3 +886,7 @@ background-color: red !important;
   display: flex;
   gap: 15px;
 }
+
+.splitView .e-splitter .e-split-bar.e-split-bar-horizontal {
+  border: 1px solid #80808066;
+}
